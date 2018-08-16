@@ -1,6 +1,8 @@
 <?php
-// DIC configuration
+use Zend\Db\Adapter\AdapterInterface;
+use src\Model\TaskListModel;
 
+// DIC configuration
 $container = $app->getContainer();
 
 // view renderer
@@ -16,4 +18,15 @@ $container['logger'] = function ($c) {
     $logger->pushProcessor(new Monolog\Processor\UidProcessor());
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
     return $logger;
+};
+
+// Zend DB
+$container[AdapterInterface::class] = function ($c) {
+    $settings = $c->get('settings')['db'];
+    $adapter = new Zend\Db\Adapter\Adapter($settings);
+    return $adapter;
+};
+
+$container[TaskListModel::class] = function ($c) {
+    return new TaskListModel($c->get(AdapterInterface::class));
 };
