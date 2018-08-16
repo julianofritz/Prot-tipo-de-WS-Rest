@@ -1,5 +1,5 @@
 <?php
-namespace src\Model;
+namespace Model;
 
 class TaskListModel extends AbstractModel
 {

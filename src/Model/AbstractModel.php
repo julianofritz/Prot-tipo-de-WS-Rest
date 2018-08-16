@@ -1,5 +1,5 @@
 <?php
-namespace src\Model;
+namespace Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\AdapterInterface;

@@ -1,8 +1,9 @@
 <?php
-namespace src\Controller;
+namespace Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Model\ModelClass\TasklistClass;
 
 class TasklistController
 {
@@ -10,23 +11,57 @@ class TasklistController
     private $request;
 
     private $response;
-
-    public function __construct(Request $request, Response $response)
+    
+    private $tasklistClass;
+    
+    public function __invoke(Request $request, Response $response, array $args)
     {
         $this->request = $request;
         $this->response = $response;
+        $this->args = $args;
+        
+        return $this->actionRouter();
     }
 
-    public function new()
+    public function __construct(TasklistClass $tasklistClass)
+    {
+        $this->tasklistClass = $tasklistClass;
+    }
+    
+    private function actionRouter()
+    {
+        $action = $this->args['action'];
+                
+        switch ($action) {
+            case 'new':
+                $this->new();
+                break;
+            case 'edit':
+                $this->edit();
+                break;
+            case 'list':
+                $this->list();
+                break;
+            case 'delete':
+                $this->delete();
+                break;
+        }
+        
+        return $this->response;
+    }
+
+    private function new()
     {}
 
-    public function edit()
+    private function edit()
     {}
 
-    public function list()
+    private function list()
     {}
 
-    public function delete()
+    private function delete()
     {}
+    
+
 }
 

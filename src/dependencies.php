@@ -1,6 +1,8 @@
 <?php
 use Zend\Db\Adapter\AdapterInterface;
-use src\Model\TaskListModel;
+use Controller\TasklistController;
+use Model\TaskListModel;
+use Model\ModelClass\TasklistClass;
 
 // DIC configuration
 $container = $app->getContainer();
@@ -27,6 +29,17 @@ $container[AdapterInterface::class] = function ($c) {
     return $adapter;
 };
 
+// Model
 $container[TaskListModel::class] = function ($c) {
     return new TaskListModel($c->get(AdapterInterface::class));
+};
+
+// Class
+$container[TasklistClass::class] = function ($c) {
+    return new TasklistClass($c->get(TaskListModel::class));
+};
+    
+// Controller
+$container[TasklistController::class] = function ($c) {
+    return new TasklistController($c->get(TasklistClass::class));
 };
