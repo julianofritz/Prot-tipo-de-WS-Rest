@@ -11,9 +11,9 @@ class TasklistController
     private $request;
 
     private $response;
-    
+
     private $tasklistClass;
-    
+
     public function __invoke(Request $request, Response $response, array $args)
     {
         $this->request = $request;
@@ -27,11 +27,11 @@ class TasklistController
     {
         $this->tasklistClass = $tasklistClass;
     }
-    
+
     private function actionRouter()
     {
         $action = $this->args['action'];
-                
+        
         switch ($action) {
             case 'new':
                 $this->new();
@@ -51,17 +51,54 @@ class TasklistController
     }
 
     private function new()
-    {}
+    {
+        $post = $this->request->getParsedBody();
+        
+        $this->tasklistClass->insert($post);
+        
+        return $this->sendResponse();
+    }
 
     private function edit()
-    {}
+    {
+        $id = $this->args['id'];
+        
+        $isPost = $this->request->isPost();
+        
+        if (! $isPost) {
+            $taskData = $this->tasklistClass->get($id);
+            
+            return $this->sendResponse($taskData);
+        }
+        
+        $post = $this->request->getParsedBody();
+        
+        $this->tasklistClass->update($post, $id);
+    }
 
     private function list()
-    {}
+    {
+        $taskList = $this->tasklistClass->getAll();
+        
+        return $this->sendResponse($taskList);
+    }
 
     private function delete()
     {}
     
-
+    private function sendResponse($data = false)
+    {
+        $httpStatus = $this->response->withStatus(200,'Ação executada com sucesso');
+        
+        if(!$data) {
+            return $this->response;
+        }
+        
+        $jsonData = json_encode($data);
+        
+        $newResponse = $this->response->withJson($jsonData);
+        
+        return $newResponse;
+    }
 }
 

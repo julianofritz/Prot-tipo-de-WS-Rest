@@ -1,0 +1,101 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema tasklist
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema tasklist
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `tasklist` DEFAULT CHARACTER SET utf8 ;
+USE `tasklist` ;
+
+-- -----------------------------------------------------
+-- Table `tasklist`.`task_status`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tasklist`.`task_status` (
+  `tks_id` INT NOT NULL AUTO_INCREMENT,
+  `tks_name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`tks_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tasklist`.`task_description`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tasklist`.`task_description` (
+  `tkd_id` INT NOT NULL AUTO_INCREMENT,
+  `tkd_description` MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (`tkd_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tasklist`.`date_type`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tasklist`.`date_type` (
+  `dtt_id` INT NOT NULL AUTO_INCREMENT,
+  `dtt_name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`dtt_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tasklist`.`task_date`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tasklist`.`task_date` (
+  `tsd_id` INT NOT NULL AUTO_INCREMENT,
+  `tsd_date` DATETIME NOT NULL,
+  `dtt_id` INT NOT NULL,
+  PRIMARY KEY (`tsd_id`),
+  INDEX `fk_task_date_date_type1_idx` (`dtt_id` ASC),
+  CONSTRAINT `fk_task_date_date_type1`
+    FOREIGN KEY (`dtt_id`)
+    REFERENCES `tasklist`.`date_type` (`dtt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tasklist`.`task_list`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tasklist`.`task_list` (
+  `tsk_id` INT NOT NULL AUTO_INCREMENT,
+  `tsk_title` VARCHAR(45) NULL,
+  `tks_id` INT NOT NULL,
+  `tsd_id` INT NULL,
+  `task_date_tsd_id` INT NULL,
+  PRIMARY KEY (`tsk_id`),
+  INDEX `fk_task_list_task_status_idx` (`tks_id` ASC),
+  INDEX `fk_task_list_task_description1_idx` (`tsd_id` ASC),
+  INDEX `fk_task_list_task_date1_idx` (`task_date_tsd_id` ASC),
+  CONSTRAINT `fk_task_list_task_status`
+    FOREIGN KEY (`tks_id`)
+    REFERENCES `tasklist`.`task_status` (`tks_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_task_list_task_description1`
+    FOREIGN KEY (`tsd_id`)
+    REFERENCES `tasklist`.`task_description` (`tkd_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_task_list_task_date1`
+    FOREIGN KEY (`task_date_tsd_id`)
+    REFERENCES `tasklist`.`task_date` (`tsd_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+INSERT INTO task_status (tks_name) VALUES ('Task Ativa')
+INSERT INTO task_status (tks_name) VALUES ('Task Inativa')

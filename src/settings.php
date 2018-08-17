@@ -21,7 +21,7 @@ return [
             'hostname' => 'localhost',
             'username' => 'root',
             'password' => 'root',
-            'database' => 'orm'
+            'database' => 'tasklist'
         ],
     ],
 ];

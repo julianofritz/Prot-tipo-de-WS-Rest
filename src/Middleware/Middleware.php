@@ -57,7 +57,7 @@ class Middleware
         
         $id = $this->_arrayUri[2];
         
-        $result = $this->validateInteger($eventId);
+        $result = $this->validateInteger($id);
         
         if (!$result) {
             $return = [
