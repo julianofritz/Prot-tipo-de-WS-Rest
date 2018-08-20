@@ -30,7 +30,14 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `tasklist`.`task_description` (
   `tkd_id` INT NOT NULL AUTO_INCREMENT,
   `tkd_description` MEDIUMTEXT NOT NULL,
-  PRIMARY KEY (`tkd_id`))
+  `tsk_id` INT NOT NULL,
+  PRIMARY KEY (`tkd_id`),
+  INDEX `fk_task_description_task_list1_idx` (`tsk_id` ASC),
+  CONSTRAINT `fk_task_description_task_list1`
+    FOREIGN KEY (`tsk_id`)
+    REFERENCES `tasklist`.`task_list` (`tsk_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -69,23 +76,16 @@ CREATE TABLE IF NOT EXISTS `tasklist`.`task_list` (
   `tsk_title` VARCHAR(45) NULL,
   `tks_id` INT NOT NULL,
   `tsd_id` INT NULL,
-  `task_date_tsd_id` INT NULL,
   PRIMARY KEY (`tsk_id`),
   INDEX `fk_task_list_task_status_idx` (`tks_id` ASC),
-  INDEX `fk_task_list_task_description1_idx` (`tsd_id` ASC),
-  INDEX `fk_task_list_task_date1_idx` (`task_date_tsd_id` ASC),
+  INDEX `fk_task_list_task_date1_idx` (`tsd_id` ASC),
   CONSTRAINT `fk_task_list_task_status`
     FOREIGN KEY (`tks_id`)
     REFERENCES `tasklist`.`task_status` (`tks_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_task_list_task_description1`
-    FOREIGN KEY (`tsd_id`)
-    REFERENCES `tasklist`.`task_description` (`tkd_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_task_list_task_date1`
-    FOREIGN KEY (`task_date_tsd_id`)
+    FOREIGN KEY (`tsd_id`)
     REFERENCES `tasklist`.`task_date` (`tsd_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)

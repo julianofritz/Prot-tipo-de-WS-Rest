@@ -4,6 +4,7 @@ namespace Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Model\ModelClass\TasklistClass;
+use Model\ModelClass\TaskDescriptionClass;
 
 class TasklistController
 {
@@ -13,6 +14,8 @@ class TasklistController
     private $response;
 
     private $tasklistClass;
+    
+    private $taskDescriptionClass;
 
     public function __invoke(Request $request, Response $response, array $args)
     {
@@ -20,37 +23,77 @@ class TasklistController
         $this->response = $response;
         $this->args = $args;
         
-        return $this->actionRouter();
+        return $this->ControllerRouter();
     }
 
-    public function __construct(TasklistClass $tasklistClass)
+    public function __construct(TasklistClass $tasklistClass, TaskDescriptionClass $taskDescriptionClass)
     {
-        $this->tasklistClass = $tasklistClass;
+        $this->tasklistClass        = $tasklistClass;
+        
+        $this->taskDescriptionClass = $taskDescriptionClass;
+    }
+    
+    private function ControllerRouter()
+    {
+        $controller = $this->args['controller'];
+        
+        switch ($controller) {
+            case 'tasklist':
+                $response = $this->taskListRouter();
+                break;
+            case 'taskdescription':
+                $response = $this->taskDescriptionRouter();
+                break;
+        }
+        
+        return $response;
     }
 
-    private function actionRouter()
+    private function taskListRouter()
     {
         $action = $this->args['action'];
         
         switch ($action) {
             case 'new':
-                $this->new();
+                $response = $this->newTaskList();
                 break;
             case 'edit':
-                $this->edit();
+                $response = $this->editTaskList();
                 break;
             case 'list':
-                $this->list();
+                $response = $this->listTaskList();
                 break;
             case 'delete':
-                $this->delete();
+                $response = $this->deleteTaskList();
                 break;
         }
         
-        return $this->response;
+        return $response;
+    }
+    
+    private function taskDescriptionRouter()
+    {
+        $action = $this->args['action'];
+        
+        switch ($action) {
+            case 'new':
+                $response = $this->newTaskDescription();
+                break;
+            case 'edit':
+                $response = $this->editTaskDescription();
+                break;
+            case 'list':
+                $response = $this->listTaskDescription();
+                break;
+            case 'delete':
+                $response = $this->deleteTaskDescription();
+                break;
+        }
+        
+        return $response;
     }
 
-    private function new()
+    private function newTaskList()
     {
         $post = $this->request->getParsedBody();
         
@@ -59,7 +102,7 @@ class TasklistController
         return $this->sendResponse();
     }
 
-    private function edit()
+    private function editTaskList()
     {
         $id = $this->args['id'];
         
@@ -76,19 +119,40 @@ class TasklistController
         $this->tasklistClass->update($post, $id);
     }
 
-    private function list()
+    private function listTaskList()
     {
         $taskList = $this->tasklistClass->getAll();
         
         return $this->sendResponse($taskList);
     }
 
-    private function delete()
+    private function deleteTaskList()
+    {}
+    
+    private function newTaskDescription()
+    {
+        $id = $this->args['id'];
+        
+        $post = $this->request->getParsedBody();
+        
+        $this->taskDescriptionClass->insert($post);
+        
+        return $this->sendResponse();
+    }
+    
+    private function editTaskDescription()
+    {}
+    
+    private function listTaskDescription()
+    {
+    }
+    
+    private function deleteTaskDescription()
     {}
     
     private function sendResponse($data = false)
     {
-        $httpStatus = $this->response->withStatus(200,'Ação executada com sucesso');
+        $httpStatus = $this->response->withStatus(200,'AÃ§Ã£o executada com sucesso');
         
         if(!$data) {
             return $this->response;
