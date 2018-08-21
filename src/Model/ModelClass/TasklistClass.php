@@ -15,8 +15,8 @@ class TasklistClass
 
     public function insert(array $formData)
     {
-        $formattedData = $this->prepareData($formData);
-        
+        $formattedData = $this->prepareData($formData, true);
+
         $id = $this->model->insertTask($formattedData);
         
         if (! $id) {
@@ -47,7 +47,7 @@ class TasklistClass
         $result = $this->model->updateTask($formattedData, $id);
     }
 
-    private function prepareData(array $formData)
+    private function prepareData(array $formData, $isInsert = false)
     {
         $data = [
             'tsk_title' => $formData['tsk_title'],

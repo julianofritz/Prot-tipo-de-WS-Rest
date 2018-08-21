@@ -21,8 +21,9 @@ class TaskListModel extends AbstractModel
         ])
         ->columns([
             'tsk_id',
-            'tsk_title'
-        ]);
+            'tsk_title',
+        ])
+        ->join(['tks' => 'task_status'], 'tks.tks_id = tsk.tks_id', ['tks_name', 'tks_id']);
         
         $dados = $this->fetchAll($sql);
         
@@ -34,7 +35,8 @@ class TaskListModel extends AbstractModel
         $sql = $this->select()->from(['tsk' => 'task_list'])
         ->columns([
             'tsk_id',
-            'tsk_title'
+            'tsk_title',
+            'tks_id'
         ])
         ->where([
             'tsk_id' => $id

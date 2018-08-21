@@ -111,12 +111,14 @@ class TasklistController
         if (! $isPost) {
             $taskData = $this->tasklistClass->get($id);
             
-            return $this->sendResponse($taskData);
+            return $this->sendResponse($taskData);  
         }
         
         $post = $this->request->getParsedBody();
         
         $this->tasklistClass->update($post, $id);
+        
+        return $this->sendResponse($post);  
     }
 
     private function listTaskList()
@@ -131,8 +133,6 @@ class TasklistController
     
     private function newTaskDescription()
     {
-        $id = $this->args['id'];
-        
         $post = $this->request->getParsedBody();
         
         $this->taskDescriptionClass->insert($post);
@@ -141,10 +141,23 @@ class TasklistController
     }
     
     private function editTaskDescription()
-    {}
+    {
+        $id = $this->args['id'];
+        
+        $post = $this->request->getParsedBody();
+        
+        $this->taskDescriptionClass->update($post, $id);
+        
+        return $this->sendResponse();
+    }
     
     private function listTaskDescription()
     {
+        $taskListId = $this->args['id'];
+        
+        $allTasksDescription = $this->taskDescriptionClass->getAll($taskListId);
+        
+        return $this->sendResponse($allTasksDescription);
     }
     
     private function deleteTaskDescription()
@@ -157,10 +170,8 @@ class TasklistController
         if(!$data) {
             return $this->response;
         }
-        
-        $jsonData = json_encode($data);
-        
-        $newResponse = $this->response->withJson($jsonData);
+              
+        $newResponse = $this->response->withJson($data);
         
         return $newResponse;
     }

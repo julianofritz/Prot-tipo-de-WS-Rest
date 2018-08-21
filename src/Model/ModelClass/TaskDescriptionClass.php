@@ -2,21 +2,25 @@
 namespace Model\ModelClass;
 
 use Model\TaskDescriptionModel;
+use Model\TaskListModel;
 
 class TaskDescriptionClass
 {
+
     private $model;
     
-    public function __construct(TaskDescriptionModel $model)
+    private $taskListModel;
+
+    public function __construct(TaskDescriptionModel $model, TaskListModel $taskListModel)
     {
         $this->model = $model;
-    }
-    
-    public function insert(array $formData)
-    {
-        $formattedData = $this->prepareData($formData);
         
-        $id = $this->model->insertTaskDescription($formattedData);
+        $this->taskListModel = $taskListModel;
+    }
+
+    public function insert(array $formData)
+    {        
+        $id = $this->model->insertTaskDescription($formData);
         
         if (! $id) {
             return false;
@@ -24,32 +28,31 @@ class TaskDescriptionClass
         
         return $id;
     }
-    
+
     public function get(int $id)
     {
         $data = $this->model->getTaskDescription($id);
         
         return $data;
     }
-    
+
     public function getAll(int $taskId)
     {
         $list = $this->model->getAllTaskDescriptions($taskId);
         
         return $list;
     }
-    
+
     public function update(array $data, int $id)
     {
-        $formattedData = $this->prepareData($data);
         
-        $result = $this->model->updateTaskDescription($formattedData, $id);
+        $result = $this->model->updateTaskDescription($data, $id);
     }
-    
+
     private function prepareData(array $formData)
     {
         $data = [
-            'tkd_description' => $formData['tkd_description'],
+            'tkd_description' => $formData['tkd_description']
         ];
         
         return $data;

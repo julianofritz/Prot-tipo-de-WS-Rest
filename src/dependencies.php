@@ -45,11 +45,15 @@ $container[TasklistClass::class] = function ($c) {
     return new TasklistClass($c->get(TaskListModel::class));
 };
 
-$continer[TaskDescriptionClass::class] = function ($c) {
-    return new TaskDescriptionClass($c->get(TaskDescriptionModel::class));  
+$container[TaskDescriptionClass::class] = function ($c) {
+    return new TaskDescriptionClass($c->get(TaskDescriptionModel::class), $c->get(TaskListModel::class));  
 };
     
 // Controller
+/*$container[TasklistController::class] = function ($c) {
+    return new TasklistController($c->get(TasklistClass::class), $c->get(TaskDescriptionClass::class));
+};*/
+
 $container[TasklistController::class] = function ($c) {
     return new TasklistController($c->get(TasklistClass::class), $c->get(TaskDescriptionClass::class));
 };
